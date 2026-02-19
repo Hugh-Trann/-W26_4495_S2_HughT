@@ -1,3 +1,5 @@
+Use IBP;
+
 SELECT TOP 5 * FROM raw.customer_purchase;
 SELECT TOP 5 * FROM raw.customer_review;
 

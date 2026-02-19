@@ -203,14 +203,15 @@ btnRun.addEventListener("click", async () => {
   if (!uploadedFileId) return;
 
   const datasetType = document.getElementById("datasetType").value;
+  const datasetYear = document.getElementById("datasetYear").value;   
 
   statusArea.className = "text-secondary";
   statusArea.textContent = "Starting pipeline...";
   outputsArea.innerHTML = "";
 
   const res = await fetch(
-    `/api/run?file_id=${encodeURIComponent(uploadedFileId)}&dataset_type=${encodeURIComponent(datasetType)}`,
-    { method: "POST" }
+  `/api/run?file_id=${encodeURIComponent(uploadedFileId)}&dataset_type=${encodeURIComponent(datasetType)}&dataset_year=${encodeURIComponent(datasetYear)}`,
+  { method: "POST" }
   );
 
   const data = await res.json();

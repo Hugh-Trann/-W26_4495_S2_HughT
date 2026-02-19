@@ -1,5 +1,5 @@
 use IBP;
-go
+
 
 SELECT COUNT(*) customers FROM clean.dim_customer;
 SELECT COUNT(*) products  FROM clean.dim_product;

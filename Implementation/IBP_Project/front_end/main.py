@@ -11,9 +11,9 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from src.load_raw import load_raw_from_uploaded_file
-from src.transform_clean import run_raw_to_clean
-
+from src.load_raw import create_batch_and_load_raw
+from src.transform_clean import run_raw_to_clean_for_batch
+from src.build_analytics import rebuild_analytics
 
 APP_DIR = Path(__file__).parent
 UPLOAD_DIR = APP_DIR / "uploads"
@@ -95,24 +95,30 @@ def api_preview(file_id: str, rows: int = 15) -> JSONResponse:
 
 
 @app.post("/api/run")
-def api_run(file_id: str, dataset_type: str = "sales") -> JSONResponse:
+def api_run(file_id: str, dataset_type: str, dataset_year: int):
     matches = list(UPLOAD_DIR.glob(f"{file_id}__*"))
     if not matches:
         raise HTTPException(status_code=404, detail="File not found.")
     uploaded_path = str(matches[0])
 
-    # 1) Load RAW (to SQL)
-    raw_result = load_raw_from_uploaded_file(uploaded_path, dataset_type)
+    raw_result = create_batch_and_load_raw(
+        file_path=uploaded_path,
+        dataset_type=dataset_type,
+        dataset_year=dataset_year
+    )
 
-    # 2) Transform RAW => CLEAN (to SQL)
-    clean_result = run_raw_to_clean()
+    clean_result = run_raw_to_clean_for_batch(raw_result["batch_id"])
+
+    analytics_result = rebuild_analytics()
 
     return JSONResponse({
-        "status": "completed",
-        "message": "Pipeline completed. RAW and CLEAN tables updated in SQL Server.",
-        "raw_result": raw_result,
-        "clean_result": clean_result,
-    })
+    "status": "completed",
+    "message": "Pipeline completed. RAW, CLEAN, and ANALYTICS updated in SQL Server.",
+    "raw_result": raw_result,
+    "clean_result": clean_result,
+    "analytics_result": analytics_result
+})
+
 
 
 @app.get("/api/status")
