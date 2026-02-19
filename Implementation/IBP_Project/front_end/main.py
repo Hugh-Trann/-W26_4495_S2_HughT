@@ -11,6 +11,10 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from src.load_raw import load_raw_from_uploaded_file
+from src.transform_clean import run_raw_to_clean
+
+
 APP_DIR = Path(__file__).parent
 UPLOAD_DIR = APP_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
@@ -91,28 +95,24 @@ def api_preview(file_id: str, rows: int = 15) -> JSONResponse:
 
 
 @app.post("/api/run")
-def api_run(file_id: str) -> JSONResponse:
+def api_run(file_id: str, dataset_type: str = "sales") -> JSONResponse:
     matches = list(UPLOAD_DIR.glob(f"{file_id}__*"))
     if not matches:
         raise HTTPException(status_code=404, detail="File not found.")
+    uploaded_path = str(matches[0])
 
-    job_id = str(uuid.uuid4())
-    JOBS[job_id] = {"status": "running", "progress": 5, "message": "Job started."}
+    # 1) Load RAW (to SQL)
+    raw_result = load_raw_from_uploaded_file(uploaded_path, dataset_type)
 
-    # Demo: simulate steps quickly (replace with your ELT trigger)
-    # In real project: enqueue a background task / Celery / RQ.
-    # Here we just mark it completed immediately for simplicity.
-    JOBS[job_id] = {
+    # 2) Transform RAW => CLEAN (to SQL)
+    clean_result = run_raw_to_clean()
+
+    return JSONResponse({
         "status": "completed",
-        "progress": 100,
-        "message": "Pipeline completed (demo). Connect this to your ELT runner.",
-        "outputs": [
-            {"label": "Cleaned dataset", "path": f"/downloads/{file_id}/cleaned.csv"},
-            {"label": "BI summary", "path": f"/downloads/{file_id}/summary.json"},
-        ],
-    }
-
-    return JSONResponse({"job_id": job_id})
+        "message": "Pipeline completed. RAW and CLEAN tables updated in SQL Server.",
+        "raw_result": raw_result,
+        "clean_result": clean_result,
+    })
 
 
 @app.get("/api/status")

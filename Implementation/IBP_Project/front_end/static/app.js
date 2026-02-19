@@ -202,13 +202,17 @@ btnPreview.addEventListener("click", async () => {
 btnRun.addEventListener("click", async () => {
   if (!uploadedFileId) return;
 
+  const datasetType = document.getElementById("datasetType").value;
+
   statusArea.className = "text-secondary";
   statusArea.textContent = "Starting pipeline...";
   outputsArea.innerHTML = "";
 
-  const res = await fetch(`/api/run?file_id=${encodeURIComponent(uploadedFileId)}`, {
-    method: "POST",
-  });
+  const res = await fetch(
+    `/api/run?file_id=${encodeURIComponent(uploadedFileId)}&dataset_type=${encodeURIComponent(datasetType)}`,
+    { method: "POST" }
+  );
+
   const data = await res.json();
 
   if (!res.ok) {
@@ -217,9 +221,14 @@ btnRun.addEventListener("click", async () => {
     return;
   }
 
-  const jobId = data.job_id;
-  await pollStatus(jobId);
+  statusArea.className = "text-success";
+  statusArea.textContent = data.message;
+
+  outputsArea.innerHTML = `
+    <pre class="bg-light border rounded p-2 small">${JSON.stringify(data, null, 2)}</pre>
+  `;
 });
+
 
 async function pollStatus(jobId) {
   for (let i = 0; i < 10; i++) {
