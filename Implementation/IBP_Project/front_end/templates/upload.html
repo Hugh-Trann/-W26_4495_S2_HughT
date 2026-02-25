@@ -88,6 +88,11 @@
                 <button id="btnRun" class="btn btn-dark" disabled>
                   Run pipeline
                 </button>
+
+                <button type="button" class="btn btn-primary" onclick="window.location.href='/dashboard'">
+                  Open Dashboard
+                </button>
+               
               </div>
 
               <hr class="my-4" />
@@ -132,5 +137,9 @@
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     ></script>
+    <script>
+      function goDashboard() {
+          window.location.href = "dashboard.html";}
+    </script>
   </body>
 </html>

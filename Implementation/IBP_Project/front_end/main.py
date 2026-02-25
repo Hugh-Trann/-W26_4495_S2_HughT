@@ -119,11 +119,13 @@ def api_run(file_id: str, dataset_type: str, dataset_year: int):
     "analytics_result": analytics_result
 })
 
-
-
 @app.get("/api/status")
 def api_status(job_id: str) -> JSONResponse:
     job = JOBS.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found.")
     return JSONResponse(job)
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard_page(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
