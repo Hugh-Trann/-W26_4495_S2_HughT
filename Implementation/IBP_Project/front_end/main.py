@@ -129,3 +129,7 @@ def api_status(job_id: str) -> JSONResponse:
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard_page(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
+
+@app.get("/upload", response_class=HTMLResponse)
+def dashboard_page(request: Request):
+    return templates.TemplateResponse("upload.html", {"request": request})
