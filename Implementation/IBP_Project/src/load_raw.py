@@ -28,8 +28,8 @@ def create_batch_and_load_raw(file_path: str, dataset_type: str, dataset_year: i
 
     batch_id = str(uuid.uuid4())
 
-    # Add metadata columns required by your schema
-    df["_source_file"] = p.name  # you already use this pattern :contentReference[oaicite:3]{index=3}
+    # Add metadata columns 
+    df["_source_file"] = p.name  
     df["batch_id"] = batch_id
     df["dataset_year"] = int(dataset_year)
 
@@ -48,10 +48,11 @@ def create_batch_and_load_raw(file_path: str, dataset_type: str, dataset_year: i
         )
         conn.commit()
 
-        # Insert raw rows (APPEND; DO NOT TRUNCATE)
+        # Insert raw rows 
         _insert_df(cur, target, df)
         conn.commit()
-
+        
+        # Check the recording result
         total_in_table = cur.execute(f"SELECT COUNT(*) FROM {target};").fetchone()[0]
         total_in_batch = cur.execute(f"SELECT COUNT(*) FROM {target} WHERE batch_id = ?;", (batch_id,)).fetchone()[0]
 

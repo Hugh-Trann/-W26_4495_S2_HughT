@@ -1,7 +1,7 @@
 import pyodbc
 
 
-SERVER = r"HTTK"          # or .\SQLEXPRESS
+SERVER = r"HTTK"        
 DATABASE = "IBP"
 DRIVER = "ODBC Driver 17 for SQL Server"
 
