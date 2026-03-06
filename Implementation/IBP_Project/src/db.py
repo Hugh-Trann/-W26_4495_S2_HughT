@@ -1,4 +1,5 @@
 import pyodbc
+# pyodbc.pooling = False
 
 SERVER = r"HTTK"
 DATABASE = "IBP"

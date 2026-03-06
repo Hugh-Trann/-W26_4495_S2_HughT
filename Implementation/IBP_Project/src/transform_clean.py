@@ -5,12 +5,12 @@ def run_raw_to_clean_for_batch(batch_id: str) -> dict:
     with get_conn() as conn:
         # Read only this batch
         purchase = pd.read_sql(
-            "SELECT * FROM raw.customer_purchase WHERE batch_id = ?;",
+            "SELECT * FROM rawT.customer_purchase WHERE batch_id = ?;",
             conn,
             params=[batch_id],
         )
         review = pd.read_sql(
-            "SELECT * FROM raw.customer_review WHERE batch_id = ?;",
+            "SELECT * FROM rawT.customer_review WHERE batch_id = ?;",
             conn,
             params=[batch_id],
         )

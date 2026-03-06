@@ -111,13 +111,13 @@ def api_run(file_id: str, dataset_type: str, dataset_year: int):
 
     # analytics_result = rebuild_analytics()
 
-    # return JSONResponse({
-    # "status": "completed",
-    # "message": "Pipeline completed. RAW, CLEAN, and ANALYTICS updated in SQL Server.",
-    # "raw_result": raw_result,
+    return JSONResponse({
+    "status": "completed",
+    "message": "Pipeline completed. RAW, CLEAN, and ANALYTICS updated in SQL Server.",
+    "raw_result": raw_result,
     # "clean_result": clean_result,
     # "analytics_result": analytics_result
-    # })
+    })
 
 @app.get("/api/status")
 def api_status(job_id: str) -> JSONResponse:

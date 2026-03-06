@@ -22,22 +22,20 @@ create table rawT.customer_purchase(
 	Sales decimal(10,2) null,
 	Discount decimal(8,2) null,
 	Profit decimal(10,2) null,
-	_ingested_at date not null default sysutcdatetime(),
-	_source varchar(250) null
+	batch_id uniqueidentifier null	
 );
 
 create table rawT.customer_review (
 	ProductID varchar(50) null ,
-	ProductName varchar(150) null,
-	UserID varchar(50) not null primary key,
+	ProductName varchar(max) null,
+	UserID varchar(50) null ,
 	ReviewScore int null,
-	ReviewDate int null,
+	ReviewDate bigint null,
 	ReviewContent varchar(max) null,
 	Category varchar(100) null,
 	SubCategory varchar(100) null,
 	ProductType varchar(100) null,
-	_ingested_at date not null default sysutcdatetime(),
-	_source varchar(250) null
+	batch_id uniqueidentifier null	
 );
 
 --create table cleaned.dim_product(
