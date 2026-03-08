@@ -1,18 +1,21 @@
 use IBP
+go 
 
-create schema cleaned
-go
+--create schema cleaned
+--go
 
 create table cleaned.dim_customer(
 	CustomerID varchar(200) not null primary key,
 	CustomerName varchar(100) not null,
-	CustomerCity varchar(100) not null
+	CustomerCity varchar(100) not null,
+	batch_id uniqueidentifier not null
 );
 
 create table cleaned.dim_product(
 	ProductID varchar(200) not null primary key,
 	Category varchar(100) not null,
-	SubCategory varchar(100) not null
+	SubCategory varchar(100) not null,
+	batch_id uniqueidentifier not null
 );
 
 create table cleaned.fact_sales(
@@ -24,5 +27,10 @@ create table cleaned.fact_sales(
 	Discount decimal(8,2) not null,
 	Profit decimal(10,2) not null,
 	constraint FK_fact_sales_customer foreign key(CustomerID) references cleaned.dim_customer(CustomerID),
-	constraint FK_fact_sales_product foreign key(ProductID) references cleaned.dim_product(ProductID)
+	constraint FK_fact_sales_product foreign key(ProductID) references cleaned.dim_product(ProductID),
+	batch_id uniqueidentifier not null
 );
+
+--drop table cleaned.dim_customer
+--drop table cleaned.dim_product
+--drop table cleaned.fact_sales
